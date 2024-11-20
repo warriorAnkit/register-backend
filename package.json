@@ -19,7 +19,8 @@
     "prestart": "npm run db:migrate",
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "npm install pg"
   },
   "repository": {
     "type": "git",
