@@ -1,0 +1,89 @@
+type Person {
+  id: ID
+  email: String
+  firstName: String
+  lastName: String
+  profileImage: String
+  role: String
+  isActive: Boolean
+  lastActiveOn: DateTime
+}
+type User {
+  firstName: String
+  lastName: String
+}
+enum PersonRole {
+  USER
+  ADMIN
+  FORM_CREATOR
+}
+
+type Query {
+   getCurrentUser: Person @isAuthenticated
+   getProjectIdForUser: ID @isAuthenticated
+  getProfileImageUploadSignedUrl(data: GetProfileImageUploadSignedUrlInput!): SignedUrlResponse @isAuthenticated
+   getUserById(userId: ID!): User
+}
+
+type Mutation {
+  signUp(data: SignUpInput!): CommonMessageResponse
+  loginUser(data: LoginUserInput!): LoginResponse
+  forgotPassword(data: ForgotPasswordInput!): CommonMessageResponse
+  updateUser(data: UpdateUserInput!): CreateUpdateUserResponse @isAuthenticated
+  updatePassword(data: UpdatePasswordInput!): CommonMessageResponse
+  refreshToken(data: RefreshTokenInput!): RefreshTokenResponse
+   logout: CommonMessageResponse @isAuthenticated
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+  firstName: String
+  lastName: String
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  message: String
+  data: Person
+  accessToken: String
+  refreshToken: String
+}
+
+input GetProfileImageUploadSignedUrlInput {
+  fileName: String!
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  profileImage: String
+}
+
+type CreateUpdateUserResponse {
+  message: String
+  data: Person
+}
+
+input ForgotPasswordInput {
+  email: String!
+}
+
+input UpdatePasswordInput {
+  uid: ID!
+  token: String!
+  password: String!
+}
+
+type RefreshTokenResponse {
+  user: Person
+  accessToken: String
+}
+
+input RefreshTokenInput {
+  refreshToken: String!
+}

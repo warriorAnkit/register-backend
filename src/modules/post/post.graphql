@@ -1,0 +1,55 @@
+type Post {
+  id: ID
+  text: String
+  createdBy: Person
+  createdAt: DateTime
+}
+
+input PostCreateInput {
+  text: String!
+}
+
+enum PostListSortField {
+  createdAt
+}
+
+input PostListSort {
+  field: PostListSortField!
+  order: SortOrder
+}
+
+type PostsResponse {
+  data: [Post]
+  count: Int
+}
+
+input PostsFilter {
+  skip: Int
+  limit: Limit
+}
+
+type CreatePostResponse {
+  message: String
+  data: Post
+}
+
+input PostUniqueWhereInput {
+  id: ID
+}
+
+type Query {
+  post(where: PostUniqueWhereInput!): Post @isAuthenticated
+  posts(filter: PostsFilter, sort: PostListSort): PostsResponse @rateLimit(window: "1m", max: 50) @isAuthenticated @hasRole(roles: ["ADMIN", "USER"])
+}
+
+type Mutation {
+  createPost(data: PostCreateInput!): CreatePostResponse @rateLimit(window: "1m", max: 20) @isAuthenticated
+}
+
+type Subscription {
+  postCreated: PostCreatedSubscriptionPayload
+}
+
+type PostCreatedSubscriptionPayload {
+  data: Post
+}

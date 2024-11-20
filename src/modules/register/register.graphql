@@ -1,0 +1,335 @@
+# eslint-disable spaced-comment
+# eslint-disable max-lines
+# eslint-disable @graphql-eslint/no-typename-prefix
+type Template {
+  id: ID!
+  name: String!
+  status: String!
+  projectId: Int!
+  fields: [TableField!]!
+  properties: [TemplateProperty!]!
+  createdById: Int!
+  templateType: String!
+}
+
+type TemplateResonse {
+  id: ID!
+  name: String!
+  status: String!
+  projectId: Int!
+  fields: [TableField!]!
+  properties: [TemplateProperty!]!
+  createdById: Int!
+  templateType: String!
+  numberOfSets: String
+  numberOfEntries: String
+}
+type TableField {
+  id: ID!
+  fieldName: String!
+  fieldType: String!
+  maxLength: Int
+  options: [String]
+  isRequired: Boolean
+  templateId: Int!
+  deletedAt: DateTime
+  createdAt: DateTime
+}
+
+type TemplateProperty {
+  id: ID!
+  propertyName: String!
+  propertyFieldType: String!
+  isRequired: Boolean
+  maxLength: Int
+  options: [String]
+  templateId: Int!
+  deletedAt: DateTime
+  createdAt: DateTime
+}
+type GlobalTemplate {
+  id: ID!
+  name: String!
+  status: String!
+  description: String
+  fields: [TableField!]!
+  properties: [TemplateProperty!]!
+  createdById: Int!
+  templateType: String!
+}
+
+type CloneTemplateResponse {
+  data: Template
+  message: String
+}
+
+type CreateGlobalTemplateResponse {
+  data: GlobalTemplate
+  message: String
+}
+input TableFieldInput {
+  fieldName: String!
+  fieldType: String!
+  isRequired: Boolean
+  maxLength: Int
+  options: [String]
+}
+
+input TemplatePropertyInput {
+  propertyName: String!
+  propertyFieldType: String!
+  isRequired: Boolean
+  maxLength: Int
+  options: [String]
+}
+
+input UpdateFieldInput {
+  id: ID # Required to identify which field to update
+  fieldName: String # Optional, for changing the field name
+  fieldType: String # Optional, for changing the field type
+  maxLength: Int # Optional
+  isRequired: Boolean
+  options: [String] # Optional
+}
+
+input UpdatePropertyInput {
+  id: ID # Required to identify which property to update
+  propertyName: String # Optional, for changing the property name
+  propertyFieldType: String # Optional, for changing the property field type
+  maxLength: Int # Optional
+  isRequired: Boolean
+  options: [String] # Optional
+}
+
+type CreateTemplateResponse {
+  data: Template # The created template
+  message: String # Success message
+}
+type FieldResponse {
+  id: ID!
+  fieldId: ID!
+  fieldName: String!
+  value: String
+  rowNumber: Int!
+  createdById:ID!
+}
+
+type PropertyResponse {
+  id: ID!
+  propertyId: ID!
+  propertyName: String!
+  value: String
+  createdAt: String
+  userId: ID!
+}
+
+# Define the structure for the merged set of responses
+type SetResponses {
+  setId: Int!
+  fieldResponses: [[FieldResponse!]]!
+  propertyResponses: [PropertyResponse!]!
+}
+
+# Define the response for the getAllResponsesForTemplate query
+type GetAllResponsesForTemplateResponse {
+  success: Boolean!
+  responses: [SetResponses!]!
+}
+type Query {
+  getTemplate(id: ID!): Template
+  getLiveTemplatesByProject(projectId: ID!): [TemplateResonse]
+  getDraftTemplatesByProject(projectId: ID!): [TemplateResonse]
+  getArchiveTemplatesByProject(projectId: ID!): [TemplateResonse]
+  getTemplateById(id: ID!): Template
+  getTemplateWithSoftDeleteById(id: ID!): Template
+  getAllResponsesForSet(setId: ID!): SetResponse
+  getAllResponsesForTemplate(
+    templateId: ID!
+  ): GetAllResponsesForTemplateResponse!
+  getAllPropertyResponsesForTemplate(
+    templateId: ID!
+  ): GetAllPropertyResponsesForTemplateResponse!
+  getGlobalTemplateById(id: ID!): GlobalTemplate
+  getAllGlobalTemplate: [GlobalTemplate]
+   getAllSetsForAllTemplates: [Sets!]!
+   getActivityLogsBySetId(setId: ID!): [ActivityLog!]!
+   getTemplateActivityLogsBytemplateId(templateId: ID!): [ActivityLog!]!
+}
+type ActivityLog {
+  id: ID!
+  actionType: ActionType!
+  entityType: EntityType!
+  entityName: String!
+  entityId: ID!
+  changes: JSON!
+  rowNumber: String
+  templateName: String!
+  editedBy: String!
+  timestamp: String!
+}
+
+enum ActionType {
+  SUBMIT_RESPONSE
+  EDIT_RESPONSE
+  DELETE_RESPONSE
+   CREATE_TEMPLATE
+  UPDATE_TEMPLATE
+  DELETE_TEMPLATE
+  CHANGE_STATUS
+}
+
+enum EntityType {
+  TEMPLATE_NAME
+  TEMPLATE
+  PROPERTY
+  FIELD
+}
+
+scalar JSON
+type Sets {
+  setId: ID!
+  templateName: String!
+  createdAt: String!
+  userId:ID
+}
+
+type Mutation {
+  createTemplate(
+    name: String!
+    projectId: ID
+    templateType: String!
+    fields: [TableFieldInput!]!
+
+    properties: [TemplatePropertyInput!]!
+  ): CreateTemplateResponse
+
+  updateTemplate(
+    id: ID!
+    name: String
+    fields: [UpdateFieldInput!]
+    properties: [UpdatePropertyInput!]
+  ): CreateTemplateResponse
+  changeTemplateStatus(id: ID!, newStatus: String!): CreateTemplateResponse
+  deleteTemplate(id: ID!): Boolean # Optional: To delete a template
+  submitResponse(
+    templateId: ID!
+    tableEntries: [[FieldEntryInput!]]
+    propertyValues: [PropertyInput!]!
+  ): ResponseMessage!
+  editResponse(
+    setId: ID!
+    propertyValues: [UpdatePropertyValueInput]
+    tableEntries: [[UpdateFieldEntryInput]]
+  ): EditResponseResult!
+  createGlobalTemplate(
+    name: String!
+    projectId: ID
+    templateType: String!
+    description: String
+    fields: [TableFieldInput!]!
+    properties: [TemplatePropertyInput!]!
+  ): CreateGlobalTemplateResponse
+
+  cloneGlobalTemplate(
+    globalTemplateId: ID!
+    projectId: ID
+    userId: ID
+    templateType: String!
+  ): CloneTemplateResponse
+}
+
+type PropertyValueResponse {
+  id: ID!
+  propertyId: ID!
+  value: String!
+  createdAt: DateTime!
+  userId: ID!
+  createdById:ID!
+}
+
+type PropertySetResponse {
+  setId: ID!
+
+  propertyResponses: [PropertyValueResponse!]!
+}
+
+# The response object for getAllPropertyResponsesForTemplate query
+type GetAllPropertyResponsesForTemplateResponse {
+  success: Boolean!
+  propertyResponses: [PropertySetResponse]
+}
+
+# The input parameters for the query
+input GetAllPropertyResponsesForTemplateInput {
+  templateId: ID!
+}
+
+type TemplateSetResponse {
+  success: Boolean!
+  fieldResponses: [FieldSetResponse!]!
+  propertyResponses: [PropertySetResponse!]!
+}
+
+type FieldSetResponse {
+  setId: ID!
+  fieldResponses: [FieldValueResponse!]!
+}
+
+type FieldValueResponse {
+  id: ID!
+  fieldId: ID!
+  value: String!
+  rowNumber: Int!
+}
+type TemplatePropertySetResponse {
+  success: Boolean!
+  propertyResponses: [PropertyValueResponse]
+}
+
+input FieldEntryInput {
+  fieldId: ID!
+  value: String!
+}
+
+input PropertyInput {
+  propertyId: ID!
+  value: String!
+}
+input UpdatePropertyValueInput {
+  responseId: ID
+  propertyId: ID!
+  value: String!
+}
+input UpdateFieldEntryInput {
+  responseId: ID
+  fieldId: ID!
+  value: String
+  rowNumber: Int
+}
+type EditResponseResult {
+  success: Boolean!
+  message: String!
+}
+type ResponseMessage {
+  success: Boolean!
+  message: String!
+}
+type SetResponse {
+  fieldResponses: [[FieldResponsesss!]] # 2D array of field responses by row
+  propertyResponses: [PropertyResponsesss!] # Array of property responses
+}
+type FieldResponsesss {
+  rowNumber: Int!
+  id: ID
+  fieldId: ID!
+  value: String!
+  createdAt: DateTime # The date and time when the property response was created
+  userId: ID!
+}
+type PropertyResponsesss {
+  id: ID!
+  propertyId: ID!
+  value: String!
+  createdAt: DateTime # The date and time when the property response was created
+  userId: ID!
+}
