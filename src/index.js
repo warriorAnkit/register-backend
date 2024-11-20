@@ -70,7 +70,7 @@ app.use(async (req, res, next) => {
   }
   next();
 });
-
+// eslint-disable-next-line no-undef
 const initServer = async () => {
   try {
     const httpServer = http.createServer(app);
