@@ -20,7 +20,8 @@
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install",
-    "postinstall": "npm install pg"
+    "postinstall": "npm install pg",
+     "build": "node-gyp rebuild"
   },
   "repository": {
     "type": "git",
