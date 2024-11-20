@@ -15,7 +15,6 @@ const signUp = async (parent, args, ctx) => {
     const {
       email, password, firstName, lastName,
     } = data;
-    
 
     if (!email || !password) {
       throw new CustomGraphqlError(getMessage('MISSING_REQUIRED_FIELDS', localeService));

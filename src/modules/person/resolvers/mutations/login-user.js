@@ -6,7 +6,6 @@ const jwt = require('../../../../utils/auth/jwt');
 const passwordUtils = require('../../../../utils/auth/password');
 const { getMessage } = require('../../../../utils/messages');
 const personLogger = require('../../person-logger');
-const { Console } = require('winston/lib/winston/transports');
 
 const loginUser = async (parent, args, ctx) => {
   const {
@@ -49,7 +48,7 @@ const loginUser = async (parent, args, ctx) => {
     const accessToken = await jwt.generateAccessToken(person.id);
     // console.log(person.id+accessToken+"ghgh   "+useragent);
     // console.log(useragent);
-     await jwt.saveAccessToken(person.id, accessToken, useragent);
+    await jwt.saveAccessToken(person.id, accessToken, useragent);
 
     if (!person.refreshToken) {
       const refreshToken = await jwt.generateRefreshToken(person.id);
@@ -58,8 +57,7 @@ const loginUser = async (parent, args, ctx) => {
 
     const lastActiveOn = moment();
     await person.update({ lastActiveOn });
-// console.log(accessToken);
-console.log(person);
+
     return {
       message: getMessage('LOGIN_SUCCESSFULLY', localeService),
       data: person,

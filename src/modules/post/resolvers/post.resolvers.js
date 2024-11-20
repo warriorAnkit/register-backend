@@ -1,5 +1,4 @@
 const { pubsub, pubsubEvents } = require('../../../pubsub');
-const postCreatedByFieldResolver = require('../field-resolver/post-created-by');
 
 const createPost = require('./mutations/create-post');
 const post = require('./queries/post');

@@ -1,4 +1,5 @@
 const moment = require('moment');
+
 const CustomGraphqlError = require('../../../../shared-lib/error-handler');
 const jwt = require('../../../../utils/auth/jwt');
 const { getMessage } = require('../../../../utils/messages');
@@ -24,7 +25,7 @@ const logout = async (parent, args, ctx) => {
     }
 
     // Clear or invalidate access token and refresh token
-    await jwt.deleteAccessToken(user.id, useragent);  // Delete the access token
+    await jwt.deleteAccessToken(user.id, useragent);
     await person.update({ refreshToken: null, lastActiveOn: moment() });
 
     return {

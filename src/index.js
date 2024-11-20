@@ -70,8 +70,8 @@ app.use(async (req, res, next) => {
   }
   next();
 });
-// eslint-disable-next-line no-undef
-initServer = async () => {
+
+const initServer = async () => {
   try {
     const httpServer = http.createServer(app);
     startApolloServer(app, httpServer, localeService);

@@ -14,7 +14,7 @@ const sendEmail = async (emailData, config = {}, options = {}, requestMeta = {})
     // Adding copyright year
     const updatedData = {
       ...data,
-      copyrightYear: new Date().getFullYear()
+      copyrightYear: new Date().getFullYear(),
     };
 
     const payload = {

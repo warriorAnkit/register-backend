@@ -2,8 +2,6 @@
 
 const { Model, NOW } = require('sequelize');
 
-
-
 module.exports = (sequelize, DataTypes) => {
   class User extends Model { }
 
@@ -28,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     phoneNo: {
       type: DataTypes.STRING,
-      allowNull:true,
+      allowNull: true,
     },
     createdBy: {
       type: DataTypes.INTEGER,
@@ -103,11 +101,11 @@ module.exports = (sequelize, DataTypes) => {
         options.raw = true;
       },
       beforeCreate(user) {
-        user.createdAt = NOW();  // Set createdAt to current date/time
-        user.updatedAt = NOW();  // Set updatedAt to current date/time
+        user.createdAt = NOW(); // Set createdAt to current date/time
+        user.updatedAt = NOW(); // Set updatedAt to current date/time
       },
       beforeUpdate(user) {
-        user.updatedAt = NOW();  // Update updatedAt to current date/time
+        user.updatedAt = NOW(); // Update updatedAt to current date/time
       },
     },
     sequelize,
@@ -125,15 +123,14 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: 'id',
       onDelete: 'RESTRICT',
     });
-  
+
     User.hasMany(models.ProjectUser, {
       as: 'projectUsers',
       foreignKey: 'userId',
       sourceKey: 'id',
       onDelete: 'RESTRICT',
     });
-    
   };
 
   return User;
-}
+};

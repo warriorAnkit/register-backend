@@ -36,7 +36,7 @@ const config = {
   ENCRYPTION: {
     IV: process.env.ENCRYPTION_IV,
     SECRET: process.env.ENCRYPTION_SECRET,
-    PASSWORD_SALT: process.env.ENCRYPTION_PASSWORD_SALT||'4d2c03ae12b3472f8b5fcd4bca0b9e5b',
+    PASSWORD_SALT: process.env.ENCRYPTION_PASSWORD_SALT || '4d2c03ae12b3472f8b5fcd4bca0b9e5b',
     PASSWORD_ITERATIONS: Number(process.env.ENCRYPTION_PASSWORD_ITERATIONS) || 1000,
   },
   PROVIDERS: {

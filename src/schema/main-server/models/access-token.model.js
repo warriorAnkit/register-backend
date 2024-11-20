@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       primaryKey: true,
       type: DataTypes.INTEGER, // Change from STRING to INTEGER
-      autoIncrement: true, 
+      autoIncrement: true,
     },
     personId: {
       type: DataTypes.INTEGER,

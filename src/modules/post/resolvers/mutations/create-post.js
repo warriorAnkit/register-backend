@@ -11,9 +11,9 @@ const createPost = async (parent, args, ctx) => {
     const { Post: PostModel } = models;
     const { data } = args;
     const { text } = data;
-// console.log(req);
+
     const { user } = req;
-// console.log(user);
+
     const createPostData = {
       text,
       createdBy: user.id,
@@ -34,7 +34,6 @@ const createPost = async (parent, args, ctx) => {
     });
     return response;
   } catch (err) {
-    console.log(err);
     postLogger.error(`Error from createPost resolver => ${err}`, requestMeta);
     throw err;
   }

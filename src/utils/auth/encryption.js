@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 
-const { ENCRYPTION } = require('../../config/config');
 const ENCRYPTION_SECRET = '0123456789abcdef0123456789abcdcccccccccccccccccccccccccccccccccef'; // 32-byte hex
 // // Hardcoded initialization vector (16 bytes in base64)
 const ENCRYPTION_IV = 'Y2hhcm1lY3RpY2VsbGVycc';
@@ -8,7 +7,7 @@ class Encryption {
   constructor(encryptionKeys = {}) {
     this.secret = Buffer.from(encryptionKeys.secret || ENCRYPTION_SECRET, 'hex'); // Hex format
     // Ensure IV is treated as a Buffer
-    this.iv = Buffer.from(encryptionKeys.iv || ENCRYPTION_IV, 'base64'); 
+    this.iv = Buffer.from(encryptionKeys.iv || ENCRYPTION_IV, 'base64');
   }
 
   encryptWithAES(text) {
@@ -34,5 +33,4 @@ class Encryption {
 const encryption = new Encryption();
 
 module.exports = encryption;
-
 

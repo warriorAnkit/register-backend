@@ -75,3 +75,4 @@ dist
 uploads
 
 .env
+.vercel

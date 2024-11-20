@@ -16,9 +16,9 @@ const logger = new Logger('jwt-utils');
 
 class JWT {
   constructor({ secret = JWT_CONFIG.SECRET, lifeTime = JWT_CONFIG.LIFE_TIME, resetLifeTime = JWT_CONFIG.RESET_TOKEN_LIFE_TIME }) {
-    this.secret = secret||'$2y$10$.EtAWvQYN.zk3/siTORJcu1C7qoKEuEGMkeuflU6PV2WbovR2SEm2';
-    this.lifeTime = lifeTime||'7d';
-    this.resetLifeTime = resetLifeTime||'1';
+    this.secret = secret || '$2y$10$.EtAWvQYN.zk3/siTORJcu1C7qoKEuEGMkeuflU6PV2WbovR2SEm2';
+    this.lifeTime = lifeTime || '7d';
+    this.resetLifeTime = resetLifeTime || '1';
   }
 
   async generateResetToken(payload) {
@@ -26,9 +26,9 @@ class JWT {
       // const expiry = `${this.resetLifeTime}h`;
       const expiry = '1h';
       const token = await generateResetToken(payload, this.secret, expiry);
-     console.log("hii ankit");
-     console.log(token);
-     
+      console.log('hii ankit');
+      console.log(token);
+
       return token;
     } catch (error) {
       logger.error(`Error from generateResetToken => ${error}`);
@@ -61,7 +61,7 @@ class JWT {
 
   async decodeToken(token, checkExpiry = true) {
     try {
-      console.log("called this too");
+      console.log('called this too');
       const data = await decodeToken(token, this.secret, checkExpiry);
       console.log(data);
       return data;
@@ -74,7 +74,7 @@ class JWT {
 
   async saveAccessToken(userId, token, options = {}) {
     try {
-      console.log("function called");
+      console.log('function called');
       const { exp: expiryTimeInMs } = await this.decodeToken(token);
       const expiredAt = moment(expiryTimeInMs * 1000).toDate();
       console.log(expiredAt);

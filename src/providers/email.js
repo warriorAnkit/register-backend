@@ -1,9 +1,7 @@
 /* eslint-disable indent */
-const CONFIG = require('../config/config');
-const logger = require('../logger');
 const Email = require('../shared-lib/providers/email');
 
-const getEmailProviderConfig = () => {
+const getEmailProviderConfig = () =>
   // let config = {
   //   provider: CONFIG.PROVIDERS.EMAIL,
   //   providerConfig: {},
@@ -47,9 +45,8 @@ const getEmailProviderConfig = () => {
   // }
 
   // logger.info(`USING ${CONFIG.PROVIDERS.EMAIL} as EMAIL PROVIDER`);
-  return "abc";
-};
-
+   // eslint-disable-next-line implicit-arrow-linebreak
+   'abc';
 const emailProviderConfig = getEmailProviderConfig();
 
 const emailProvider = new Email(emailProviderConfig);

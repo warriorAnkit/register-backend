@@ -6,8 +6,7 @@ const JWT_SECRET = CONFIG.JWT.SECRET;
 const JWT_LIFE_TIME = CONFIG.JWT.LIFE_TIME;
 
 const generateToken = userId => new Promise((resolve, reject) => {
-
-  console.log("called yrr",userId);
+  console.log('called yrr', userId);
   jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_LIFE_TIME }, (error, token) => {
     if (error) {
       return reject(error);
