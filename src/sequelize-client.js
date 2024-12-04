@@ -26,6 +26,7 @@ if (config.use_env_variable) {
         rejectUnauthorized: false,
       },
     },
+    logging: false,
   });
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, {
@@ -38,6 +39,7 @@ if (config.use_env_variable) {
         rejectUnauthorized: false,
       },
     },
+    logging: false,
   });
 }
 

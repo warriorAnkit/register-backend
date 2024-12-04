@@ -8,8 +8,13 @@ const CustomGraphqlError = require('../../../../shared-lib/error-handler');
 const { getMessage } = require('../../../../utils/messages');
 const postLogger = require('../../register-logger');
 
-// const db = require('../models');
-
+const replaceFieldNamesWithIds = (formula, fieldNameToIdMap) => formula.replace(/"([^"]*)"/g, (match, fieldName) => {
+  if (fieldNameToIdMap[fieldName]) {
+    return fieldNameToIdMap[fieldName];
+  }
+  // If the field name doesn't exist in the map, throw an error
+  throw new Error(`Field "${fieldName}" does not exist or is invalid.`);
+});
 const createTemplate = async (parent, args, ctx) => {
   const {
     requestMeta, req, localeService, models,
@@ -28,6 +33,13 @@ const createTemplate = async (parent, args, ctx) => {
     if (!projectId) {
       projectId = await models.ProjectUser.getProjectId(user.id, models);
     }
+    const existingTemplate = await TemplateModel.findOne({
+      where: { name, projectId },
+    });
+
+    if (existingTemplate) {
+      throw new CustomGraphqlError(getMessage('TEMPLATE_NAME_EXISTS_ERROR', localeService));
+    }
     if (user.role === 'USER') {
       throw new CustomGraphqlError(getMessage('TEMPLATE_CREATE_PERMISSION_ERROR', localeService));
     }
@@ -41,13 +53,28 @@ const createTemplate = async (parent, args, ctx) => {
       templateType,
     });
 
-    // console.log(template);
+    const fieldNameToIdMap = {};
 
     for (const field of fields) {
-      await db.TableField.create({
+      const createdField = await db.TableField.create({
         ...field,
         templateId: template.id,
       });
+      fieldNameToIdMap[field.fieldName] = createdField.id;
+    }
+    for (const field of fields) {
+      if (field.fieldType === 'CALCULATION' && field.options) {
+        const formulaWithIds = replaceFieldNamesWithIds(
+          field.options[0],
+          fieldNameToIdMap,
+        );
+        // eslint-disable-next-line no-console
+        console.log(formulaWithIds);
+        await db.TableField.update(
+          { options: [formulaWithIds] }, // Updating the options array with the new formula
+          { where: { id: fieldNameToIdMap[field.fieldName] } },
+        );
+      }
     }
 
     for (const property of properties) {
@@ -88,7 +115,6 @@ const createTemplate = async (parent, args, ctx) => {
 
     return response;
   } catch (err) {
-    console.log('hii');
     postLogger.error(`Error from createTemplate resolver => ${err}`, requestMeta);
     // throw new CustomGraphqlError(getMessage('INTERNAL_SERVER_ERROR', localeService, { error: err.message || 'Unknown error occurred' }));
     throw err;

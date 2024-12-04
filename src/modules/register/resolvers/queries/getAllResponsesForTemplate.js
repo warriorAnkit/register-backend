@@ -22,7 +22,6 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
       ],
     });
 
-    console.log("wr7e", fieldResponses);
     // Fetch Property Responses
     const propertyResponses = await models.PropertyResponse.findAll({
       where: { templateId },

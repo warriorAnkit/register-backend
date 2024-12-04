@@ -83,7 +83,6 @@ const getActivityLogsBySetId = async (parent, args, ctx) => {
         };
       }),
     );
-    console.log(resolvedLogs);
     return resolvedLogs;
   } catch (error) {
     postLogger.error(`Error in getActivityLogsBySetId resolver: ${error.message}`, requestMeta);

@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+  app:
+    container_name: ${NODE_CONTAINER_NAME}
+    restart: unless-stopped
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - app_node_modules:/app/node_modules
+    command: npx nodemon src/index.js  # Start your app using nodemon or directly npm start
+    ports:
+      - ${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}
+    networks:
+      - server-boilerplate-network
+    depends_on:
+      - redis  # Ensure Redis is available before app starts
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "6379:6379"  # Expose Redis on port 6379
+    networks:
+      - server-boilerplate-network
+    volumes:
+      - redis_data:/data  # Persist Redis data
+    command: redis-server --requirepass Ag9uHqVIXt3vFqE2PteSmakOjuhtgdsX
+
+networks:
+  server-boilerplate-network:
+    driver: bridge
+
+volumes:
+  app_node_modules:
+  redis_data:

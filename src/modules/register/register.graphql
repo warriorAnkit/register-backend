@@ -151,7 +151,7 @@ type Query {
   ): GetAllPropertyResponsesForTemplateResponse!
   getGlobalTemplateById(id: ID!): GlobalTemplate
   getAllGlobalTemplate: [GlobalTemplate]
-   getAllSetsForAllTemplates: [Sets!]!
+   getAllSetsForAllTemplates(projectId: ID!): [Sets!]!
    getActivityLogsBySetId(setId: ID!): [ActivityLog!]!
    getTemplateActivityLogsBytemplateId(templateId: ID!): [ActivityLog!]!
 }
@@ -189,8 +189,11 @@ scalar JSON
 type Sets {
   setId: ID!
   templateName: String!
+  templateId:ID!
   createdAt: String!
   userId:ID
+  updatedAt:String!
+  updatedBy:ID
 }
 
 type Mutation {
@@ -314,7 +317,16 @@ type ResponseMessage {
   success: Boolean!
   message: String!
 }
+type SetDetails {
+  id: ID!
+  createdBy: String!
+  createdAt: String!
+  updatedBy: String
+  updatedAt: String
+}
+
 type SetResponse {
+  setDetails: SetDetails!
   fieldResponses: [[FieldResponsesss!]] # 2D array of field responses by row
   propertyResponses: [PropertyResponsesss!] # Array of property responses
 }

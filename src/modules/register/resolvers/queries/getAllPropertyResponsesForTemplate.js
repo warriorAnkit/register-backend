@@ -10,7 +10,6 @@ const getAllPropertyResponsesForTemplate = async (parent, args, ctx) => {
       requestMeta, req, localeService, models,
     } = ctx;
     const { templateId } = args;
-    console.log(args);
 
     const propertyResponses = await models.PropertyResponse.findAll({
       where: { templateId },
@@ -51,7 +50,7 @@ const getAllPropertyResponsesForTemplate = async (parent, args, ctx) => {
     }));
 
     // eslint-disable-next-line no-shadow
-    formattedResponses.forEach(({ propertyResponses }) => console.log(propertyResponses));
+    // formattedResponses.forEach(({ propertyResponses }) => console.log(propertyResponses));
 
     return {
       success: true,

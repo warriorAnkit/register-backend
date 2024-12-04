@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
@@ -22,13 +23,13 @@ const editResponse = async (parent, args, ctx) => {
   try {
     const { setId, tableEntries, propertyValues } = args;
     const { user } = req;
+
     const convertedEntries = convertNullResponseIdsToNegativeOne(tableEntries);
 
-    const existingSet = await models.Set.findByPk(setId, { raw: true });
+    const existingSet = await models.Set.findByPk(setId);
     if (!existingSet) {
       throw new CustomGraphqlError('Response set not found');
     }
-    console.log(propertyValues);
 
     // Fetch all current field responses for this set
     const existingFieldResponses = await models.FieldResponse.findAll({
@@ -116,8 +117,13 @@ const editResponse = async (parent, args, ctx) => {
       }));
     }
     for (const propertyValue of propertyValues) {
-      const { responseId, propertyId, value } = propertyValue;
-
+      let { responseId } = propertyValue;
+      const { propertyId, value } = propertyValue;
+      console.log(responseId);
+      if (responseId === null) {
+        responseId = -1;
+      }
+      console.log('noe id', responseId);
       if (responseId !== -1) {
         const existingPropertyResponse = await models.PropertyResponse.findOne({
           where: { setId, id: responseId },
@@ -147,15 +153,39 @@ const editResponse = async (parent, args, ctx) => {
             });
           }
         }
+      } else {
+        // Handle the case where the responseId is -1 (new property response)
+        const newPropertyResponse = await models.PropertyResponse.create({
+          setId,
+          templateId: existingSet.templateId,
+          propertyId,
+          createdById: user.id,
+          value,
+          updatedById: user.id,
+        });
+
+        await models.ResponseActivityLog.create({
+          userId: user.id,
+          setId,
+          templateId: existingSet.templateId,
+          actionType: 'EDIT_RESPONSE',
+          entityType: 'PROPERTY',
+          entityId: newPropertyResponse.id,
+          changes: { previousValue: null, newValue: value },
+        });
       }
     }
+
+    await existingSet.update({
+      updatedBy: user.id,
+      updatedAt: new Date(),
+    });
 
     return {
       success: true,
       message: getMessage('RESPONSE_UPDATED', localeService, { name: user.name || 'User' }),
     };
   } catch (error) {
-    console.error('Error updating response:', error);
     postLogger.error(`Error from editResponse resolver => ${error}`, requestMeta);
     throw error;
   }

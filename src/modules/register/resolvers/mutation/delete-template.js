@@ -12,7 +12,7 @@ const deleteTemplate = async (parent, { id }, ctx) => {
   try {
     const { Template: TemplateModel } = models;
 
-    if (user.role === 'FORM_CREATOR') {
+    if (user.role !== 'FORM_CREATOR') {
       throw new CustomGraphqlError(getMessage('TEMPLATE_UPDATE_PERMISSION_ERROR', localeService));
     }
 

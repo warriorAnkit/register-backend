@@ -17,10 +17,10 @@ const submitResponse = async (parent, args, ctx) => {
     // Create a new response set
     const newSet = await models.Set.create({
       templateId,
-      userId: user.id, // Save the user ID who submitted the response
+      userId: user.id,
+      updatedBy: user.id,
     });
 
-    // Store property responses for the created set (one entry per propertyId)
     await Promise.all(propertyValues.map(async propertyValue => {
       const propertyResponse = await models.PropertyResponse.create({
         setId: newSet.id,
@@ -35,6 +35,7 @@ const submitResponse = async (parent, args, ctx) => {
       await models.ResponseActivityLog.create({
         userId: user.id,
         templateId,
+        setId: newSet.id,
         actionType: 'SUBMIT_RESPONSE',
         entityType: 'PROPERTY',
         entityId: propertyResponse.id,
@@ -61,6 +62,7 @@ const submitResponse = async (parent, args, ctx) => {
         await models.ResponseActivityLog.create({
           userId: user.id,
           templateId,
+          setId: newSet.id,
           actionType: 'SUBMIT_RESPONSE',
           entityType: 'FIELD',
           entityId: fieldResponse.id,

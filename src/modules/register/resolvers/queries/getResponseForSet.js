@@ -5,11 +5,18 @@ const postLogger = require('../../register-logger');
 
 const getAllResponsesForSet = async (parent, args, ctx) => {
   try {
-    const {
-      requestMeta, req, localeService, models,
-    } = ctx;
+    const { req, localeService, models } = ctx;
     const { setId } = args;
-    console.log(setId);
+
+    // Fetch the set information
+    const set = await models.Set.findOne({
+      where: { id: setId },
+      attributes: ['id', 'userId', 'createdAt', 'updatedBy', 'updatedAt'],
+    });
+
+    if (!set) {
+      throw new Error('Set not found');
+    }
 
     const fieldResponses = await models.FieldResponse.findAll({
       where: { setId },
@@ -52,10 +59,17 @@ const getAllResponsesForSet = async (parent, args, ctx) => {
       value: response.value,
       createdAt: response.createdAt,
     }));
-    console.log(formattedFieldResponses.length);
-    console.log(formattedPropertyResponses.length);
-    console.log('hiii i gota call');
+
+    const setDetails = {
+      id: set.id,
+      createdBy: set.userId,
+      createdAt: set.createdAt,
+      updatedBy: set.updatedBy,
+      updatedAt: set.updatedAt,
+    };
+
     return {
+      setDetails,
       fieldResponses: formattedFieldResponses,
       propertyResponses: formattedPropertyResponses,
     };
@@ -64,4 +78,6 @@ const getAllResponsesForSet = async (parent, args, ctx) => {
     throw error;
   }
 };
+
 module.exports = getAllResponsesForSet;
+

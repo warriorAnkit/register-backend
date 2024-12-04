@@ -1,9 +1,18 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 const { pubsub, pubsubEvents } = require('../../../../pubsub');
 const CustomGraphqlError = require('../../../../shared-lib/error-handler');
 const { getMessage } = require('../../../../utils/messages');
 const postLogger = require('../../register-logger');
+
+const replaceFieldNamesWithIds = (formula, fieldNameToIdMap) => formula.replace(/"([^"]*)"/g, (match, fieldName) => {
+  if (fieldNameToIdMap[fieldName]) {
+    return fieldNameToIdMap[fieldName];
+  }
+  // If the field name doesn't exist in the map, throw an error
+  throw new Error(`Field "${fieldName}" does not exist or is invalid.`);
+});
 
 const updateTemplate = async (parent, args, ctx) => {
   const {
@@ -16,6 +25,7 @@ const updateTemplate = async (parent, args, ctx) => {
     const {
       id, name, fields, properties,
     } = args;
+    // console.log(fields);
 
     if (user.role === 'USER') {
       throw new CustomGraphqlError(getMessage('TEMPLATE_UPDATE_PERMISSION_ERROR', localeService));
@@ -25,7 +35,7 @@ const updateTemplate = async (parent, args, ctx) => {
     if (!template) {
       throw new CustomGraphqlError(getMessage('TEMPLATE_NOT_FOUND', localeService));
     }
-
+    const allFields = [];
     const isDraft = template.status === 'DRAFT';
 
     if (name && name !== template.name) {
@@ -74,6 +84,7 @@ const updateTemplate = async (parent, args, ctx) => {
     if (fields) {
       await Promise.all(fields.map(async field => {
         if (field.id) {
+          allFields.push(field);
           const existingField = await models.TableField.findByPk(field.id);
           if (existingField) {
             const oldFieldData = existingField.toJSON();
@@ -98,8 +109,7 @@ const updateTemplate = async (parent, args, ctx) => {
             }
           }
         } else {
-          const newField = await models.TableField.create({ ...field, templateId: template.id });
-
+          const newField = await models.TableField.create({ ...field, templateId: template.id }, { raw: true });
           await TemplateActivityLog.create({
             userId: user.id,
             templateId: id,
@@ -108,10 +118,12 @@ const updateTemplate = async (parent, args, ctx) => {
             entityId: newField.id,
             changes: { from: null, to: field },
           });
+          console.log('newly create d field', newField.dataValues);
+          allFields.push(newField.dataValues);
+          console.log(allFields);
         }
       }));
     }
-
     for (const existingProperty of existingProperties) {
       if (!propertyIds.includes(parseInt(existingProperty.id, 10))) {
         if (isDraft) {
@@ -180,6 +192,25 @@ const updateTemplate = async (parent, args, ctx) => {
       ],
     });
 
+    const fieldNameToIdMap = {};
+    for (const field of allFields) {
+      fieldNameToIdMap[field.fieldName] = field.id;
+    }
+
+    for (const field of fields) {
+      if (field.fieldType === 'CALCULATION' && field.options) {
+        const formulaWithIds = replaceFieldNamesWithIds(
+          field.options[0],
+          fieldNameToIdMap,
+        );
+        // console.log(formulaWithIds);
+        await models.TableField.update(
+          { options: [formulaWithIds] }, // Updating the options array with the new formula
+          { where: { id: fieldNameToIdMap[field.fieldName] } },
+        );
+      }
+    }
+    // console.log(fieldNameToIdMap);
     const response = {
       data: updatedTemplate,
       message: getMessage('TEMPLATE_UPDATE_SUCCESS', localeService, { name: updatedTemplate.name }),

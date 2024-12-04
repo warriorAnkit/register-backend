@@ -83,7 +83,7 @@ const getTemplateActivityLogsBytemplateId = async (parent, args, ctx) => {
         };
       }),
     );
-    console.log(resolvedLogs);
+
     return resolvedLogs;
   } catch (error) {
     postLogger.error(`Error in getActivityLogsBytemplateId resolver: ${error.message}`, requestMeta);

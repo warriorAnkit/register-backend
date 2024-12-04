@@ -8,7 +8,7 @@ const getTemplateById = async (parent, args, ctx) => {
   try {
     const { Template: TemplateModel } = models;
     const { id } = args;
-    console.log(id);
+
     // Check if the template ID is provided
     if (!id) {
       throw new CustomGraphqlError(getMessage('MISSING_REQUIRED_FIELDS', localeService));
@@ -17,11 +17,13 @@ const getTemplateById = async (parent, args, ctx) => {
     // Fetch the template by its ID
     const template = await TemplateModel.findByPk(id, {
       include: [
-        { model: models.TableField, as: 'fields' }, // Include fields if needed
-        { model: models.TemplateProperty, as: 'properties' }, // Include properties if needed
+        // eslint-disable-next-line comma-spacing
+        { model: models.TableField, as: 'fields' , order: [['id', 'ASC']] }, // Include fields if needed
+        { model: models.TemplateProperty, as: 'properties', order: [['id', 'ASC']] }, // Include properties if needed
       ],
     });
-
+    template.fields.sort((a, b) => a.id - b.id);
+    template.properties.sort((a, b) => a.id - b.id);
     // If template is not found, throw an error
     if (!template) {
       throw new CustomGraphqlError(getMessage('TEMPLATE_NOT_FOUND', localeService));

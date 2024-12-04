@@ -8,14 +8,15 @@ const getAllSetsForAllTemplates = async (parent, args, ctx) => {
     const {
       requestMeta, req, localeService, models,
     } = ctx;
-
+    const { projectId } = args;
     // Fetch all sets related to all templates
     const sets = await models.Set.findAll({
       order: [['createdAt', 'DESC']], // Sort by createdAt (descending)
       include: [
         {
           model: models.Template, // Assuming Template model exists and is related to Set
-          attributes: ['name'], // Fetch the template name
+          attributes: ['id', 'name', 'projectId'], // Fetch the template name and projectId
+          where: { projectId }, // Filter by projectId
         },
       ],
     });
@@ -30,11 +31,12 @@ const getAllSetsForAllTemplates = async (parent, args, ctx) => {
     const formattedSets = sets.map(set => ({
       setId: set.id,
       userId: set.userId,
-      templateName: set.Template.name, // Template name fetched from the relation
-      createdAt: set.createdAt, // Created date
+      templateName: set.Template.name,
+      templateId: set.templateId,
+      createdAt: set.createdAt,
+      updatedAt: set.updatedAt,
+      updatedBy: set.updatedBy,
     }));
-
-    console.log(formattedSets);
 
     // Return formatted sets data
     return formattedSets;
