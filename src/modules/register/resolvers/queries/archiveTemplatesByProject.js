@@ -45,12 +45,6 @@ const getArchiveTemplatesByProject = async (parent, args, ctx) => {
       raw: true,
     });
 
-    // // If no archive templates are found, throw an error
-    // if (!archiveTemplates.length) {
-    //   throw new CustomGraphqlError(getMessage('archive_TEMPLATES_NOT_FOUND', localeService));
-    // }
-
-    // Return the list of archive templates
     return archiveTemplates;
   } catch (error) {
     postLogger.error(`Error from getarchiveTemplatesByProject resolver => ${error}`, requestMeta);

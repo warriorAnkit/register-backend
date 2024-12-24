@@ -23,6 +23,7 @@ type TemplateResonse {
   templateType: String!
   numberOfSets: String
   numberOfEntries: String
+  createdAt: DateTime!
 }
 type TableField {
   id: ID!
@@ -239,6 +240,8 @@ type Mutation {
     userId: ID
     templateType: String!
   ): CloneTemplateResponse
+
+ generateSignedUrl(filename: String!, fileType: String!): SignedUrlResponse!
 }
 
 type PropertyValueResponse {
@@ -344,4 +347,7 @@ type PropertyResponsesss {
   value: String!
   createdAt: DateTime # The date and time when the property response was created
   userId: ID!
+}
+type SignedUrlResponse {
+  signedUrl: String!
 }

@@ -94,7 +94,8 @@ const updateTemplate = async (parent, args, ctx) => {
                 fieldChanges[key] = { from: oldFieldData[key], to: field[key] };
               }
             });
-
+            // eslint-disable-next-line no-console
+            console.log(fieldChanges);
             if (Object.keys(fieldChanges).length > 0) {
               await existingField.update(field);
 
@@ -110,6 +111,7 @@ const updateTemplate = async (parent, args, ctx) => {
           }
         } else {
           const newField = await models.TableField.create({ ...field, templateId: template.id }, { raw: true });
+
           await TemplateActivityLog.create({
             userId: user.id,
             templateId: id,

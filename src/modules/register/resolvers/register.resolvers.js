@@ -8,6 +8,7 @@ const deleteTemplate = require('./mutation/delete-template');
 const editResponse = require('./mutation/editResponse');
 const submitResponse = require('./mutation/submit-response');
 const updateTemplate = require('./mutation/update-template');
+const generateSignedUrl = require('./mutation/upload');
 const getArchiveTemplatesByProject = require('./queries/archiveTemplatesByProject');
 const getDraftTemplatesByProject = require('./queries/draftTemplatesByProject');
 const getActivityLogsBySetId = require('./queries/getActivityLogsBySetId');
@@ -50,6 +51,7 @@ const resolvers = {
     editResponse,
     createGlobalTemplate,
     cloneGlobalTemplate,
+    generateSignedUrl,
   },
 
   Subscription: {
