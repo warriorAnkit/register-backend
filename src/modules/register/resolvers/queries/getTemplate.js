@@ -18,11 +18,12 @@ const getTemplateById = async (parent, args, ctx) => {
     const template = await TemplateModel.findByPk(id, {
       include: [
         // eslint-disable-next-line comma-spacing
-        { model: models.TableField, as: 'fields' , order: [['id', 'ASC']] }, // Include fields if needed
+        { model: models.TableField, as: 'fields' , order: [['sequence', 'ASC']] }, // Include fields if needed
         { model: models.TemplateProperty, as: 'properties', order: [['id', 'ASC']] }, // Include properties if needed
       ],
     });
-    template.fields.sort((a, b) => a.id - b.id);
+
+    template.fields.sort((a, b) => a.sequence - b.sequence);
     template.properties.sort((a, b) => a.id - b.id);
     // If template is not found, throw an error
     if (!template) {

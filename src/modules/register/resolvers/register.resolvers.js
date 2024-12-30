@@ -3,9 +3,12 @@ const { pubsub, pubsubEvents } = require('../../../pubsub');
 const changeTemplateStatus = require('./mutation/change-template-status');
 const cloneGlobalTemplate = require('./mutation/clone-global-template');
 const createGlobalTemplate = require('./mutation/create-global-template');
+const createSet = require('./mutation/create-set');
 const createTemplate = require('./mutation/create-template');
 const deleteTemplate = require('./mutation/delete-template');
+const editSet = require('./mutation/edit-set');
 const editResponse = require('./mutation/editResponse');
+const fieldResponseSubmit = require('./mutation/field-response-submit');
 const submitResponse = require('./mutation/submit-response');
 const updateTemplate = require('./mutation/update-template');
 const generateSignedUrl = require('./mutation/upload');
@@ -16,15 +19,13 @@ const getAllGlobalTemplate = require('./queries/getAllGlobalTemplate');
 const getAllPropertyResponsesForTemplate = require('./queries/getAllPropertyResponsesForTemplate');
 const getAllResponsesForTemplate = require('./queries/getAllResponsesForTemplate');
 const getAllSetsForAllTemplates = require('./queries/getAllSets');
+const getTemplatesWithPagination = require('./queries/getAllTemplates');
 const getGlobalTemplateById = require('./queries/getGlobalTemplateById');
 const getAllResponsesForSet = require('./queries/getResponseForSet');
 const getTemplateById = require('./queries/getTemplate');
 const getTemplateActivityLogsBytemplateId = require('./queries/getTemplateActivityLogs');
 const getTemplateWithSoftDeleteById = require('./queries/getTemplateIncludingsoftDelete');
 const getLiveTemplatesByProject = require('./queries/liveTemplatesByproject');
-
-// const post = require('./queries/post');
-// const posts = require('./queries/posts');
 
 const resolvers = {
   Query: {
@@ -41,6 +42,7 @@ const resolvers = {
     getAllSetsForAllTemplates,
     getActivityLogsBySetId,
     getTemplateActivityLogsBytemplateId,
+    getTemplatesWithPagination,
   },
   Mutation: {
     createTemplate,
@@ -52,6 +54,9 @@ const resolvers = {
     createGlobalTemplate,
     cloneGlobalTemplate,
     generateSignedUrl,
+    createSet,
+    editSet,
+    fieldResponseSubmit,
   },
 
   Subscription: {

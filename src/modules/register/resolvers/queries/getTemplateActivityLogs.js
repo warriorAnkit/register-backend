@@ -70,6 +70,7 @@ const getTemplateActivityLogsBytemplateId = async (parent, args, ctx) => {
             newValue: log.changes.to,
           };
         }
+        console.log('formattedChanges', formattedChanges);
         return {
           id: log.id,
           actionType: log.actionType,

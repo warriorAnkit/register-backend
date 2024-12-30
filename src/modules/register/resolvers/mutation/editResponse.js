@@ -23,7 +23,7 @@ const editResponse = async (parent, args, ctx) => {
   try {
     const { setId, tableEntries, propertyValues } = args;
     const { user } = req;
-
+    console.log('tableEntries', tableEntries);
     const convertedEntries = convertNullResponseIdsToNegativeOne(tableEntries);
 
     const existingSet = await models.Set.findByPk(setId);
@@ -61,7 +61,7 @@ const editResponse = async (parent, args, ctx) => {
     }));
 
     let maxRowNumber = await models.FieldResponse.max('rowNumber', { where: { setId } }) || 0;
-
+    console.log('vonvertedEntries', convertedEntries);
     for (const row of convertedEntries) {
       const hasNewEntries = row.some(entry => entry.responseId === -1);
 
@@ -119,11 +119,11 @@ const editResponse = async (parent, args, ctx) => {
     for (const propertyValue of propertyValues) {
       let { responseId } = propertyValue;
       const { propertyId, value } = propertyValue;
-      console.log(responseId);
+      // console.log(responseId);
       if (responseId === null) {
         responseId = -1;
       }
-      console.log('noe id', responseId);
+      // console.log('noe id', responseId);
       if (responseId !== -1) {
         const existingPropertyResponse = await models.PropertyResponse.findOne({
           where: { setId, id: responseId },

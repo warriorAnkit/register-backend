@@ -23,7 +23,7 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
     });
     fieldResponses.forEach(response => {
       // console.log('FieldResponse:', response.toJSON());
-      console.log('Associated TableField:', response);
+      console.log('Associated TableField:');
     });
     // Fetch Property Responses
     const propertyResponses = await models.PropertyResponse.findAll({
@@ -42,7 +42,6 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
 
     // Process Field Responses
     fieldResponses.forEach(response => {
-      console.log('1st', response);
       const { setId, rowNumber, TableField } = response;
       if (!TableField) {
         return;
@@ -54,7 +53,6 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
       if (!setsMap[setId].fieldResponses[rowNumber]) {
         setsMap[setId].fieldResponses[rowNumber] = [];
       }
-      console.log(response);
       setsMap[setId].fieldResponses[rowNumber].push({
         id: response.id,
         fieldId: response.fieldId,

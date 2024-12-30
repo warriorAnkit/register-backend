@@ -39,6 +39,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: true, // Set the default value to true
     },
+    sequence: { // New column
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0, // Default value set to 0
+    },
   }, {
     sequelize,
     modelName: 'TableField',

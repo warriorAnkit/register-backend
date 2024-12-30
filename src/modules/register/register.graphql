@@ -74,8 +74,8 @@ input TableFieldInput {
   isRequired: Boolean
   maxLength: Int
   options: [String]
+  sequence: Int
 }
-
 input TemplatePropertyInput {
   propertyName: String!
   propertyFieldType: String!
@@ -91,6 +91,7 @@ input UpdateFieldInput {
   maxLength: Int # Optional
   isRequired: Boolean
   options: [String] # Optional
+  sequence: Int
 }
 
 input UpdatePropertyInput {
@@ -141,6 +142,14 @@ type Query {
   getLiveTemplatesByProject(projectId: ID!): [TemplateResonse]
   getDraftTemplatesByProject(projectId: ID!): [TemplateResonse]
   getArchiveTemplatesByProject(projectId: ID!): [TemplateResonse]
+
+  getTemplatesWithPagination(
+    projectId: ID!
+    page: Int
+    pageSize: Int
+    searchQuery: String
+    filters: String
+  ): [TemplateResonse]
   getTemplateById(id: ID!): Template
   getTemplateWithSoftDeleteById(id: ID!): Template
   getAllResponsesForSet(setId: ID!): SetResponse
@@ -224,7 +233,7 @@ type Mutation {
     setId: ID!
     propertyValues: [UpdatePropertyValueInput]
     tableEntries: [[UpdateFieldEntryInput]]
-  ): EditResponseResult!
+ ): EditResponseResult!
   createGlobalTemplate(
     name: String!
     projectId: ID
@@ -242,6 +251,21 @@ type Mutation {
   ): CloneTemplateResponse
 
  generateSignedUrl(filename: String!, fileType: String!): SignedUrlResponse!
+  createSet(templateId: ID!,propertyValues: [PropertyInput!]!): ResponseMessage!
+  editSet(setId: ID!,propertyValues: [UpdatePropertyValueInput]): ResponseMessage!
+  fieldResponseSubmit(setId: ID!, tableEntries: [[UpdateFieldEntryInput]], rowNumberDelete:Int, filling: Boolean ): FieldUpdateResponseMessage!
+}
+type FieldUpdateResponseMessage {
+  success: Boolean!
+  message: String!
+  updatedOrCreatedResponses: [TableRowResponse!]
+}
+type TableRowResponse {
+  responseId: ID!
+  fieldId: ID!
+  value: String
+  rowNumber: Int
+  status: String
 }
 
 type PropertyValueResponse {
@@ -311,6 +335,7 @@ input UpdateFieldEntryInput {
   fieldId: ID!
   value: String
   rowNumber: Int
+  isNewRow: Boolean
 }
 type EditResponseResult {
   success: Boolean!
@@ -318,6 +343,7 @@ type EditResponseResult {
 }
 type ResponseMessage {
   success: Boolean!
+  setId: ID
   message: String!
 }
 type SetDetails {

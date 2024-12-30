@@ -25,8 +25,7 @@ const updateTemplate = async (parent, args, ctx) => {
     const {
       id, name, fields, properties,
     } = args;
-    // console.log(fields);
-
+    console.log('fields', fields);
     if (user.role === 'USER') {
       throw new CustomGraphqlError(getMessage('TEMPLATE_UPDATE_PERMISSION_ERROR', localeService));
     }
@@ -90,7 +89,7 @@ const updateTemplate = async (parent, args, ctx) => {
             const oldFieldData = existingField.toJSON();
             const fieldChanges = {};
             Object.keys(field).forEach(key => {
-              if (field[key] !== oldFieldData[key]) {
+              if (String(field[key]) !== String(oldFieldData[key])) {
                 fieldChanges[key] = { from: oldFieldData[key], to: field[key] };
               }
             });
@@ -120,9 +119,7 @@ const updateTemplate = async (parent, args, ctx) => {
             entityId: newField.id,
             changes: { from: null, to: field },
           });
-          console.log('newly create d field', newField.dataValues);
           allFields.push(newField.dataValues);
-          console.log(allFields);
         }
       }));
     }
@@ -153,7 +150,7 @@ const updateTemplate = async (parent, args, ctx) => {
             const oldPropertyData = existingProperty.toJSON();
             const propertyChanges = {};
             Object.keys(property).forEach(key => {
-              if (property[key] !== oldPropertyData[key]) {
+              if (String(property[key]) !== String(oldPropertyData[key])) {
                 propertyChanges[key] = { from: oldPropertyData[key], to: property[key] };
               }
             });

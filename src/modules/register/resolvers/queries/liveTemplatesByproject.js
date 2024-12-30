@@ -45,13 +45,6 @@ const getLiveTemplatesByProject = async (parent, args, ctx) => {
       raw: true,
     });
 
-    // If no live templates are found, throw an error
-    // if (!liveTemplates.length) {
-    //   throw new CustomGraphqlError(getMessage('LIVE_TEMPLATES_NOT_FOUND', localeService));
-    // }
-
-    // Return the list of live templates along with the counts
-    // console.log('Live Templates:', JSON.stringify(liveTemplates, null, 2));
     return liveTemplates;
   } catch (error) {
     postLogger.error(`Error from getLiveTemplatesByProject resolver => ${error.message}`, requestMeta);

@@ -76,3 +76,5 @@ uploads
 
 .env
 .vercel
+
+service-account-key.json

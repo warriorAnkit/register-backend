@@ -22,20 +22,15 @@ const generateSignedUrl = async (parent, { filename, fileType }, ctx) => {
       contentType: fileType, // Adjust if necessary based on your file type
     };
 
-    console.log("Requesting signed URL for file:", filename);
-
     // Generate the signed URL for the file
     const [url] = await storage
       .bucket(bucketName)
       .file(filename)
       .getSignedUrl(options);
 
-    console.log('Generated signed URL:', url);
-
     // Return the signed URL in a structured object as required by the GraphQL schema
     return { signedUrl: url };
   } catch (error) {
-    console.error('Error generating signed URL:', error);
     throw new Error('Error generating signed URL');
   }
 };

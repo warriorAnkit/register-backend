@@ -27,6 +27,7 @@ const createTemplate = async (parent, args, ctx) => {
     const {
       name, fields, properties, projectId: providedProjectId, templateType,
     } = args;
+    console.log('fields', fields);
     const { user } = req;
     let projectId = providedProjectId || null;
     // Get the projectId for the user if not provided
