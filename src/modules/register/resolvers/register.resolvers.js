@@ -19,7 +19,7 @@ const getAllGlobalTemplate = require('./queries/getAllGlobalTemplate');
 const getAllPropertyResponsesForTemplate = require('./queries/getAllPropertyResponsesForTemplate');
 const getAllResponsesForTemplate = require('./queries/getAllResponsesForTemplate');
 const getAllSetsForAllTemplates = require('./queries/getAllSets');
-const getTemplatesWithPagination = require('./queries/getAllTemplates');
+const getAllTemplates = require('./queries/getAllTemplates');
 const getGlobalTemplateById = require('./queries/getGlobalTemplateById');
 const getAllResponsesForSet = require('./queries/getResponseForSet');
 const getTemplateById = require('./queries/getTemplate');
@@ -42,7 +42,7 @@ const resolvers = {
     getAllSetsForAllTemplates,
     getActivityLogsBySetId,
     getTemplateActivityLogsBytemplateId,
-    getTemplatesWithPagination,
+    getAllTemplates,
   },
   Mutation: {
     createTemplate,

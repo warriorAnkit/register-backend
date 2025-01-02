@@ -142,14 +142,6 @@ type Query {
   getLiveTemplatesByProject(projectId: ID!): [TemplateResonse]
   getDraftTemplatesByProject(projectId: ID!): [TemplateResonse]
   getArchiveTemplatesByProject(projectId: ID!): [TemplateResonse]
-
-  getTemplatesWithPagination(
-    projectId: ID!
-    page: Int
-    pageSize: Int
-    searchQuery: String
-    filters: String
-  ): [TemplateResonse]
   getTemplateById(id: ID!): Template
   getTemplateWithSoftDeleteById(id: ID!): Template
   getAllResponsesForSet(setId: ID!): SetResponse
@@ -161,9 +153,32 @@ type Query {
   ): GetAllPropertyResponsesForTemplateResponse!
   getGlobalTemplateById(id: ID!): GlobalTemplate
   getAllGlobalTemplate: [GlobalTemplate]
-   getAllSetsForAllTemplates(projectId: ID!): [Sets!]!
+   getAllSetsForAllTemplates(
+    projectId: ID!
+    page:Int
+    pageSize:Int
+    search:String
+    ): SetPage!
    getActivityLogsBySetId(setId: ID!): [ActivityLog!]!
    getTemplateActivityLogsBytemplateId(templateId: ID!): [ActivityLog!]!
+  getAllTemplates(
+    page: Int
+    pageSize: Int
+    search: String
+    filters: String
+    projectId: ID!
+): TemplatePaginationResult
+
+}
+type SetPage {
+  sets: [Sets!]!
+  totalCount: Int!
+}
+type TemplatePaginationResult {
+  templates: [TemplateResonse]
+  totalCount: Int!
+  page: Int!
+  pageSize: Int!
 }
 type ActivityLog {
   id: ID!
@@ -223,7 +238,7 @@ type Mutation {
     properties: [UpdatePropertyInput!]
   ): CreateTemplateResponse
   changeTemplateStatus(id: ID!, newStatus: String!): CreateTemplateResponse
-  deleteTemplate(id: ID!): Boolean # Optional: To delete a template
+  deleteTemplate(id: ID!): DeleteResponse # Optional: To delete a template
   submitResponse(
     templateId: ID!
     tableEntries: [[FieldEntryInput!]]
@@ -338,6 +353,10 @@ input UpdateFieldEntryInput {
   isNewRow: Boolean
 }
 type EditResponseResult {
+  success: Boolean!
+  message: String!
+}
+type DeleteResponse{
   success: Boolean!
   message: String!
 }

@@ -13,7 +13,7 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
     // Fetch Field Responses
     const fieldResponses = await models.FieldResponse.findAll({
       where: { templateId },
-      order: [['setId', 'ASC'], ['rowNumber', 'ASC']],
+      order: [['setId', 'DESC']], //
       include: [
         {
           model: models.TableField,
@@ -21,14 +21,11 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
         },
       ],
     });
-    fieldResponses.forEach(response => {
-      // console.log('FieldResponse:', response.toJSON());
-      console.log('Associated TableField:');
-    });
+
     // Fetch Property Responses
     const propertyResponses = await models.PropertyResponse.findAll({
       where: { templateId },
-      order: [['createdAt', 'ASC']],
+      order: [['setId', 'DESC']], //
       include: [
         {
           model: models.TemplateProperty,
@@ -89,7 +86,8 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
         .map(rowNumber => setsMap[setId].fieldResponses[rowNumber]),
       propertyResponses: setsMap[setId].propertyResponses,
     }));
-
+    formattedResponses.sort((a, b) => b.setId - a.setId);
+    console.log('formattedResponses:', formattedResponses);
     return {
       success: true,
       responses: formattedResponses, // Merged field and property responses for each setId

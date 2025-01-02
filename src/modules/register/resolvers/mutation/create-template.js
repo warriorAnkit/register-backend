@@ -92,23 +92,6 @@ const createTemplate = async (parent, args, ctx) => {
       ],
 
     });
-
-    await models.TemplateActivityLog.create({
-      userId: user.id, // Log the ID of the user who created the template
-      templateId: createdTemplate.id, // Reference to the newly created template
-      actionType: 'CREATE_TEMPLATE',
-      entityType: 'TEMPLATE',
-      entityId: createdTemplate.id, // Entity ID of the template
-      changes: {
-        before: null,
-        after: {
-          id: createdTemplate.id,
-          name: createdTemplate.name,
-          fields: createdTemplate.fields,
-          properties: createdTemplate.properties,
-        },
-      },
-    });
     const response = {
       data: createdTemplate,
       message: getMessage('TEMPLATE_CREATE_SUCCESS', localeService, { name: createdTemplate.name }),

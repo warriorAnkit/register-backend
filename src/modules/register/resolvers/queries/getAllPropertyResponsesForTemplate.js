@@ -13,7 +13,7 @@ const getAllPropertyResponsesForTemplate = async (parent, args, ctx) => {
 
     const propertyResponses = await models.PropertyResponse.findAll({
       where: { templateId },
-      order: [['createdAt', 'ASC']], // You can order based on createdAt or another relevant field
+      order: [['setId', 'DESC']], // You can order based on createdAt or another relevant field
       include: [
         {
           model: models.TemplateProperty,
@@ -21,7 +21,7 @@ const getAllPropertyResponsesForTemplate = async (parent, args, ctx) => {
         },
       ],
     });
-
+    // console.log('propertyResponses', propertyResponses);
     // Create a map to hold responses organized by setId
     const setsMap = {};
 
@@ -48,7 +48,8 @@ const getAllPropertyResponsesForTemplate = async (parent, args, ctx) => {
       setId: parseInt(setId),
       propertyResponses: setsMap[setId],
     }));
-
+    formattedResponses.sort((a, b) => b.setId - a.setId);
+    console.log(formattedResponses);
     // eslint-disable-next-line no-shadow
     // formattedResponses.forEach(({ propertyResponses }) => console.log(propertyResponses));
 

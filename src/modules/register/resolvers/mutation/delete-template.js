@@ -38,8 +38,11 @@ const deleteTemplate = async (parent, { id }, ctx) => {
       entityId: id, // The ID of the deleted template
       changes: null, // You can log the changes if necessary, or keep it null
     });
-
-    return true; // Return true if deletion is successful
+    const response = {
+      success: true,
+      message: getMessage('TEMPLATE_DELETE_SUCCESS', localeService, { name: template.name }),
+    };
+    return response; // Return true if deletion is successful
   } catch (err) {
     postLogger.error(`Error from deleteTemplate resolver => ${err}`, requestMeta);
     // throw new Error(getMessage('TEMPLATE_DELETE_ERROR', localeService, { error: err.message || 'Unknown error occurred' }));
