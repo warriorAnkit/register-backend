@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 
+const { template } = require('lodash');
+
 const CustomGraphqlError = require('../../../../shared-lib/error-handler');
 const { getMessage } = require('../../../../utils/messages');
 const postLogger = require('../../register-logger');
@@ -62,7 +64,10 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
 
     // Process Property Responses
     propertyResponses.forEach(response => {
-      const { setId } = response;
+      const { setId, TemplateProperty } = response;
+      if (!TemplateProperty) {
+        return;
+      }
       if (!setsMap[setId]) {
         setsMap[setId] = { fieldResponses: {}, propertyResponses: [] };
       }
@@ -87,7 +92,6 @@ const getAllResponsesForTemplate = async (parent, args, ctx) => {
       propertyResponses: setsMap[setId].propertyResponses,
     }));
     formattedResponses.sort((a, b) => b.setId - a.setId);
-    console.log('formattedResponses:', formattedResponses);
     return {
       success: true,
       responses: formattedResponses, // Merged field and property responses for each setId

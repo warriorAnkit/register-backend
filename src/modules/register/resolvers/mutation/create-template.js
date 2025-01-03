@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const { Console } = require('winston/lib/winston/transports');
-
 const { pubsub, pubsubEvents } = require('../../../../pubsub');
 const CustomGraphqlError = require('../../../../shared-lib/error-handler');
 const { getMessage } = require('../../../../utils/messages');
@@ -69,8 +67,7 @@ const createTemplate = async (parent, args, ctx) => {
           field.options[0],
           fieldNameToIdMap,
         );
-        // eslint-disable-next-line no-console
-        console.log(formulaWithIds);
+
         await db.TableField.update(
           { options: [formulaWithIds] }, // Updating the options array with the new formula
           { where: { id: fieldNameToIdMap[field.fieldName] } },

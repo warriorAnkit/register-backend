@@ -60,6 +60,8 @@ const getAllResponsesForSet = async (parent, args, ctx) => {
       createdAt: response.createdAt,
     }));
 
+    console.log('formattedPropertyResponses', formattedPropertyResponses);
+
     const setDetails = {
       id: set.id,
       createdBy: set.userId,

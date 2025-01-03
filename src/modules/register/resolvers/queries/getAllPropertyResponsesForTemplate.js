@@ -26,8 +26,11 @@ const getAllPropertyResponsesForTemplate = async (parent, args, ctx) => {
     const setsMap = {};
 
     propertyResponses.forEach(response => {
-      const { setId } = response;
-
+      const { setId, TemplateProperty } = response;
+      console.log('response', TemplateProperty);
+      if (!TemplateProperty) {
+        return;
+      }
       if (!setsMap[setId]) {
         setsMap[setId] = [];
       }
